@@ -1,13 +1,16 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = 3000;
 const cors = require('cors');
+const authRouter = require('./routes/auth');
+
+const port = 3000;
 app.use(cors());
 
 const usersRouter = require('./routes/users');
 
-app.use(express.json()); // if you plan to receive JSON data
+app.use(express.json());
+app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 
 app.get('/', (req, res) => {
