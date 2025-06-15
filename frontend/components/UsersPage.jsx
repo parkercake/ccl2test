@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import * as api from "../services/apiService.js";
+import { useNavigate } from 'react-router-dom';
 
 function UsersPage() {
     const [users, setUsers] = useState([]);
@@ -11,15 +12,21 @@ function UsersPage() {
         password: "",  // required in DB!
         bio: ""
     });
+    const [errorMessage, setErrorMessage] = useState("");
 
-
+    const navigate = useNavigate();
 
     const fetchUsers = async () => {
         try {
             const data = await api.getUsers();
             setUsers(Array.isArray(data) ? data : []);
+            setErrorMessage("");  // clear if success
         } catch (error) {
-            console.error('Error fetching users:', error);
+            if (error.message === 'unauthorized') {
+                setErrorMessage("You are not authorized to view this page.");
+            } else {
+                setErrorMessage("Error loading users.");
+            }
         }
     };
 
@@ -76,14 +83,25 @@ function UsersPage() {
         });
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        navigate('/login');
+    };
+
     useEffect(() => {
-        void fetchUsers();
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            navigate('/login');
+        } else {
+            void fetchUsers();
+        }
     }, []);
 
     return (
         <div>
             <h1>Users</h1>
-
+            <button onClick={handleLogout}>Logout</button>
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             <div>
                 <input
                     type="text"

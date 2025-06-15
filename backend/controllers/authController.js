@@ -1,30 +1,34 @@
 const userModel = require('../models/userModel');
-const bcrypt = require('bcrypt');
+const authService = require('../services/authService'); // now handles JWT + password logic
 
-async function login(req, res, next) {
+async function login(req, res) {
     try {
         const { email, password } = req.body;
 
         const user = await userModel.getUserByEmail(email);
-        if (!user) {
+        if (!user || !user.password) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        if (!user.password) {
-            console.error('User has no password in DB:', user.email);
-            return res.status(500).json({ message: 'User has invalid password' });
-        }
-
-        const match = await bcrypt.compare(password, user.password);
+        // Use authService to compare passwords
+        const match = await authService.comparePasswords(password, user.password);
         if (!match) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
+        // Use authService to generate tokens
+        const accessToken = authService.generateAccessToken(user);
+        const refreshToken = authService.generateRefreshToken(user);
+
         res.status(200).json({
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email
+            accessToken,
+            refreshToken,
+            user: {
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email
+            }
         });
     } catch (err) {
         console.error('Error in login:', err);
@@ -32,7 +36,18 @@ async function login(req, res, next) {
     }
 }
 
+async function refresh(req, res) {
+    const { refreshToken } = req.body;
+    if (!refreshToken) return res.sendStatus(401);
 
-module.exports = {
-    login
-};
+    try {
+        const user = await authService.verifyRefreshToken(refreshToken);
+        const newAccessToken = authService.generateAccessToken(user);
+        res.json({ accessToken: newAccessToken });
+    } catch (err) {
+        console.error('Refresh error:', err);
+        res.sendStatus(403);
+    }
+}
+
+module.exports = { login, refresh };

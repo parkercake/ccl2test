@@ -12,10 +12,7 @@ function LoginPage() {
         try {
             const userData = await api.login(email, password);
             console.log('Logged in user:', userData);
-
-            // Optional: You can also store user info in local state, context, or localStorage here
-
-            // Navigate to /users
+            console.log('Token', localStorage.getItem('authToken'));
             navigate('/users');
         } catch (error) {
             setLoginResult("Login failed");

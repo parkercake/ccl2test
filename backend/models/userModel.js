@@ -1,6 +1,5 @@
 const db = require('../services/database.js').config;
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const authService = require('../services/authService');
 
 let getUsers = () => new Promise((resolve, reject) => {
     db.query("SELECT * FROM users_ccl2", function (err, users, fields) {
@@ -40,18 +39,14 @@ let addUser = (userData) => new Promise(async (resolve, reject) => {
     try {
         const { first_name, last_name, email, password, bio } = userData;
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const hashedPassword = await authService.hashPassword(password);
 
         db.query(
-            "INSERT INTO users_ccl2 (first_name, last_name, email, password, bio) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO users (first_name, last_name, email, password, bio) VALUES (?, ?, ?, ?, ?)",
             [first_name, last_name, email, hashedPassword, bio],
             function (err, result) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
+                if (err) reject(err);
+                else resolve(result);
             }
         );
     } catch (err) {
@@ -60,12 +55,13 @@ let addUser = (userData) => new Promise(async (resolve, reject) => {
 });
 
 
+
 let updateUser = (id, userData) => new Promise(async (resolve, reject) => {
     try {
         const { first_name, last_name, email, bio, password } = userData;
 
         if (password && password.length > 0) {
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            const hashedPassword = await authService.hashPassword(password);
             db.query(
                 "UPDATE users_ccl2 SET first_name = ?, last_name = ?, email = ?, bio = ?, password = ? WHERE id = ?",
                 [first_name, last_name, email, bio, hashedPassword, id],
