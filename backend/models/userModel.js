@@ -42,7 +42,7 @@ let addUser = (userData) => new Promise(async (resolve, reject) => {
         const hashedPassword = await authService.hashPassword(password);
 
         db.query(
-            "INSERT INTO users (first_name, last_name, email, password, bio) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO users_ccl2 (first_name, last_name, email, password, bio) VALUES (?, ?, ?, ?, ?)",
             [first_name, last_name, email, hashedPassword, bio],
             function (err, result) {
                 if (err) reject(err);

@@ -1,5 +1,5 @@
 const userModel = require('../models/userModel');
-const authService = require('../services/authService'); // now handles JWT + password logic
+const authService = require('../services/authService');
 
 async function login(req, res) {
     try {
@@ -10,13 +10,11 @@ async function login(req, res) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        // Use authService to compare passwords
         const match = await authService.comparePasswords(password, user.password);
         if (!match) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        // Use authService to generate tokens
         const accessToken = authService.generateAccessToken(user);
         const refreshToken = authService.generateRefreshToken(user);
 

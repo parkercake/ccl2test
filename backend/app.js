@@ -9,8 +9,12 @@ app.use(cors());
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
 const groupRouter = require('./routes/groups');
+const eventRouter = require('./routes/events');
+const userEvents = require('./routes/userEvents');
 
 app.use(express.json());
+app.use('/', userEvents);
+app.use('/events', eventRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/groups', groupRouter);

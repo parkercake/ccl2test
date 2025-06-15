@@ -4,8 +4,8 @@ const mysql = require('mysql2');
 console.log(process.env.DB_USERNAME);
 
 const config = mysql.createConnection({
-    host: 'atp.fhstp.ac.at', //The hostname or IP address of the MySQL server
-    port: 8007, //The port number on which the MySQL server is running
+    host: 'atp.fhstp.ac.at',
+    port: 8007,
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: "cc241066"

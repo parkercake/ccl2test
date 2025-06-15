@@ -2,7 +2,7 @@ const BASE_URL = 'http://localhost:3000';
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('authToken');
-    console.log("Current token:", token); // helpful debug
+    console.log("Current token:", token);
     return {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
@@ -20,7 +20,6 @@ export const login = async (email, password) => {
 
     const result = await response.json();
 
-    // 👇 THIS IS ESSENTIAL
     localStorage.setItem('authToken', result.accessToken);
     localStorage.setItem('refreshToken', result.refreshToken);
 
@@ -53,7 +52,6 @@ const secureFetch = async (url, options = {}) => {
         try {
             await refreshAccessToken();
 
-            // retry once with new token
             response = await fetch(url, {
                 ...options,
                 headers: { ...getAuthHeaders(), ...(options.headers || {}) }
