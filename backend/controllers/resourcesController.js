@@ -5,21 +5,33 @@ async function getResources(req, res) {
         const resources = await resourceModel.getResourcesByGroupId(req.params.groupId);
         res.json(resources);
     } catch (err) {
+        console.error("Error in getResources:", err); // 👈 Add this
         res.sendStatus(500);
     }
 }
 
 async function addResource(req, res) {
     try {
+        console.log(req.body);
         const groupId = req.params.groupId;
+        const file = req.file;
+        console.log(req.file);
+        if (!file) {
+            return res.status(400);
+        }
+
         const resourceData = {
-            ...req.body,
+            name: req.body.name || file.originalname,
+            file_path: `/uploads/${file.filename}`,
+            file_size: file.size,
+            file_type: file.mimetype,
             uploaded_by: req.user.id
         };
 
         const newId = await resourceModel.addResource(groupId, resourceData);
-        res.status(201).json({ id: newId });
+        res.status(201);
     } catch (err) {
+        console.error("Error in addResource:", err);
         res.sendStatus(500);
     }
 }

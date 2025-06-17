@@ -4,7 +4,8 @@ async function getGroups(req, res) {
     try {
         const groups = await groupModel.getGroups();
         res.json(groups);
-    } catch {
+    } catch (err) {
+        console.error('getGroups error:', err);  // <--- NEU
         res.sendStatus(500);
     }
 }

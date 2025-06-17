@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const ACCESS_EXPIRY = '1m';
+const ACCESS_EXPIRY = '1h';
 const REFRESH_EXPIRY = '7d';
 const SALT_ROUNDS = 10;
 
@@ -23,6 +23,9 @@ function generateRefreshToken(user) {
 
 function verifyAccessToken(token) {
     return new Promise((resolve, reject) => {
+        if(token.startsWith('Bearer ')) {
+            token = token.slice(7, token.length); // Remove 'Bearer ' prefix
+        }
         jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
             if (err) return reject(err);
             resolve(user);

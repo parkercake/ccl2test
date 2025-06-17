@@ -1,4 +1,4 @@
-const db = require('../services/database');
+const db = require('../services/database.js').config;
 
 const rsvpToEvent = (userId, eventId, status = 'attending') => new Promise((resolve, reject) => {
     db.query(

@@ -1,4 +1,5 @@
 const db = require('../services/database.js').config;
+
 const authService = require('../services/authService');
 
 let getUsers = () => new Promise((resolve, reject) => {

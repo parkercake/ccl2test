@@ -1,4 +1,4 @@
-const db = require('../services/database');
+const db = require('../services/database.js').config;
 
 const getMembersByGroupId = (groupId) => new Promise((resolve, reject) => {
     db.query(
