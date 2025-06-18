@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const { Server } = require("socket.io");
+const expressSession = require('express-session');
+const sharedSession = require('express-socket.io-session');
 const cors = require('cors');
 const path = require("path");
 const messageModel = require('./models/messageModel');
@@ -12,10 +14,12 @@ const port = 3000;
 
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-app.use(cors({
-    origin: 'http://localhost:5173', // ✅ your Vite/React frontend
+app.use(cors(
+    {
+    origin: true,               // ✅ your Vite/React frontend
     credentials: true               // ✅ allow sending cookies
-}));
+}
+));
 app.use(cookieParser());
 
 const authRouter = require('./routes/auth');
@@ -24,11 +28,11 @@ const groupRouter = require('./routes/groups');
 const eventRouter = require('./routes/events');
 const userEvents = require('./routes/userEvents');
 
-app.use('/auth', authRouter);
-app.use('/', userEvents);
-app.use('/events', eventRouter);
-app.use('/users', usersRouter);
-app.use('/groups', groupRouter);
+app.use('/api/auth', authRouter);
+app.use('/api', userEvents);
+app.use('/api/events', eventRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/groups', groupRouter);
 
 // HTTP + Socket.IO
 const server = http.createServer(app);
@@ -38,7 +42,14 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
+const session = expressSession({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+})
 
+// app.use(session);
+// io.use(sharedSession(session))
 // Socket.IO logic
 io.on('connection', (socket) => {
     console.log('Socket connected:', socket.id);
@@ -64,6 +75,14 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('Socket disconnected:', socket.id);
     });
+});
+
+app.use(
+    express.static(path.join(__dirname, '../frontend/dist'))
+);
+
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
 // Start server

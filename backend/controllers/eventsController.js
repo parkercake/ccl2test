@@ -28,22 +28,19 @@ async function addEventToGroup(req, res) {
 }
 
 async function addEventToUser(req, res) {
-    if (!req.body) {
-        return res.status(400).json({ error: "Missing request body" });
-    }
+    console.log("BODY RECEIVED:", req.body);
+    const { name, start, end } = req.body;
+    const userId = req.params.userId;
 
-    const { eventId, status } = req.body;
-    const userId = req.user?.id || req.body.userId;
-
-    if (!userId || !eventId) {
-        return res.status(400).json({ error: "Missing userId or eventId" });
+    if (!userId || !name || !start || !end) {
+        return res.status(400).json({ error: "Missing userId, name, start, or end" });
     }
 
     try {
-        await eventModel.addEventToUser(userId, eventId, status || "attending");
-        res.status(201).json({ message: "User assigned to event" });
+        const eventId = await eventModel.addEventToUser(userId, { name, start, end });
+        res.status(201).json({ id: eventId });
     } catch (err) {
-        console.error("assignUserToEvent error:", err);
+        console.error("addEventToUser error:", err);
         res.sendStatus(500);
     }
 }

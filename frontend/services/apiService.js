@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://cc241066-10723.node.fhstp.cc/api";
 
 export const secureFetch = async (path, options = {}) => {
     let res = await fetch(`${BASE_URL}${path}`, {

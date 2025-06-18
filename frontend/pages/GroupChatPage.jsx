@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 import * as api from "../services/messagesApi.js";
 import { useUser } from "../src/context/UserContext";
 
-const socket = io("http://localhost:3000");
+const socket = io("wss://cc241066-10704.node.fhstp.cc:10704");
 
 export default function GroupChatPage() {
     const { groupId } = useParams();

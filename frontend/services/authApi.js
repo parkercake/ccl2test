@@ -1,5 +1,8 @@
+// const BASE_URL = " http://localhost:3000";
+const BASE_URL = "https://cc241066-10723.node.fhstp.cc/api";
+
 export const login = async (email, password) => {
-    const res = await fetch("http://localhost:3000/auth/login", {
+    const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -15,7 +18,7 @@ export const login = async (email, password) => {
 
 export const refresh = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
-    return fetch("http://localhost:3000/auth/refresh", {
+    return fetch(`${BASE_URL}/auth/refresh`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -24,7 +27,7 @@ export const refresh = async () => {
 };
 
 export const logout = async () => {
-    return fetch("http://localhost:3000/auth/logout", {
+    return fetch(`${BASE_URL}/auth/logout`, {
         method: "POST",
         credentials: "include"
     });
