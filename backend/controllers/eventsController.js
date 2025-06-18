@@ -9,11 +9,41 @@ async function getEvents(req, res) {
     }
 }
 
-async function addEvent(req, res) {
+async function getEventsFromUser(req, res) {
     try {
-        const eventId = await eventModel.addEvent(req.params.groupId, req.body);
+        const events = await eventModel.getEventsByUserId(req.params.userId);
+        res.json(events);
+    } catch (err) {
+        res.sendStatus(500);
+    }
+}
+
+async function addEventToGroup(req, res) {
+    try {
+        const eventId = await eventModel.addEventToGroup(req.params.groupId, req.body);
         res.status(201).json({ id: eventId });
     } catch (err) {
+        res.sendStatus(500);
+    }
+}
+
+async function addEventToUser(req, res) {
+    if (!req.body) {
+        return res.status(400).json({ error: "Missing request body" });
+    }
+
+    const { eventId, status } = req.body;
+    const userId = req.user?.id || req.body.userId;
+
+    if (!userId || !eventId) {
+        return res.status(400).json({ error: "Missing userId or eventId" });
+    }
+
+    try {
+        await eventModel.addEventToUser(userId, eventId, status || "attending");
+        res.status(201).json({ message: "User assigned to event" });
+    } catch (err) {
+        console.error("assignUserToEvent error:", err);
         res.sendStatus(500);
     }
 }
@@ -38,7 +68,9 @@ async function deleteEvent(req, res) {
 
 module.exports = {
     getEvents,
-    addEvent,
+    getEventsFromUser,
+    addEventToGroup,
+    addEventToUser,
     updateEvent,
     deleteEvent
 };

@@ -1,0 +1,147 @@
+/* Calendar */
+.calendar-container {
+    display: flex;
+    gap: 30px;
+}
+
+.calendar-main {
+    flex: 1;
+}
+
+.calendar-grid {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-nav {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar-nav-btn {
+    background: none;
+    border: 1px solid #ddd;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.calendar-month {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar-table th,
+.calendar-table td {
+    padding: 12px;
+    text-align: center;
+    vertical-align: top;
+    border: 1px solid #f0f0f0;
+    width: 14.28%;
+    height: 50px;
+}
+
+.calendar-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    font-size: 12px;
+    color: #666;
+    height: auto;
+    padding: 8px;
+}
+
+.calendar-date {
+    font-size: 14px;
+    color: #333;
+}
+
+.calendar-date.has-event {
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.calendar-date.secondary-event {
+    background-color: #666;
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.calendar-date.multiple-events {
+    background-color: #999;
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.calendar-sidebar {
+    width: 300px;
+}
+
+.upcoming-events {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.upcoming-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.event-item {
+    background-color: #ccc;
+    height: 50px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+}
+
+.event-item:last-child {
+    margin-bottom: 0;
+}
+
+.calendar-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.calendar-action-btn {
+    background-color: #ccc;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #666;
+}
+
+.all-events-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}

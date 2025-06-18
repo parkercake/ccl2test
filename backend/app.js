@@ -8,9 +8,10 @@ const path = require("path");
 const messageModel = require('./models/messageModel');
 const cookieParser = require('cookie-parser');
 
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-
 const port = 3000;
+
+app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use(cors({
     origin: 'http://localhost:5173', // ✅ your Vite/React frontend
     credentials: true               // ✅ allow sending cookies
@@ -23,7 +24,6 @@ const groupRouter = require('./routes/groups');
 const eventRouter = require('./routes/events');
 const userEvents = require('./routes/userEvents');
 
-app.use(express.json());
 app.use('/auth', authRouter);
 app.use('/', userEvents);
 app.use('/events', eventRouter);

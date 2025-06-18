@@ -34,30 +34,34 @@ export default function GroupResourcesPage() {
     };
 
     return (
-        <div>
-            <h3>Resources</h3>
-            <ul>
-                {resources.map(r => (
-                    <li key={r.id}>
-                        {r.name} by {r.first_name || "Unknown"}
-                    </li>
-                ))}
-            </ul>
-            <input
-                type="text"
-                placeholder="File name (optional)"
-                value={form.name}
-                onChange={e => setForm({ ...form, name: e.target.value })}
-            />
-            <label>
-                File:
+        <div className="dashboard-content">
+            <h3 className="section-title">Resources</h3>
+
+            <div className="resource-upload-row">
+                <input
+                    type="text"
+                    placeholder="File name (optional)"
+                    value={form.name}
+                    onChange={e => setForm({ ...form, name: e.target.value })}
+                />
                 <input
                     type="file"
-                    name="file"
                     onChange={e => setForm({ ...form, file: e.target.files[0] })}
                 />
-            </label>
-            <button onClick={handleAdd}>Add</button>
+                <button className="auth-btn" onClick={handleAdd}>Add</button>
+            </div>
+
+            <div className="resources-list">
+                {resources.map(r => (
+                    <div key={r.id} className="resource-item">
+                        <div className="resource-info">
+                            <div className="resource-name">{r.name}</div>
+                            <div className="resource-date">Uploaded by {r.first_name || "Unknown"}</div>
+                        </div>
+                        <div className="file-type-badge">file</div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

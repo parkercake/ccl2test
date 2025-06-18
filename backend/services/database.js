@@ -1,19 +1,18 @@
 require('dotenv').config();
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
-console.log(process.env.DB_USERNAME);
+// Optional debug
+console.log("DB user:", process.env.DB_USERNAME);
 
-const config = mysql.createConnection({
+const pool = mysql.createPool({
     host: 'atp.fhstp.ac.at',
     port: 8007,
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-    database: "cc241066"
-})
-
-config.connect(function(err) {
-    if (err) throw err;
-    console.log("Connected!");
+    database: 'cc241066',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-module.exports = {config};
+module.exports = { pool };

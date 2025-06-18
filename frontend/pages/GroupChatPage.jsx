@@ -39,15 +39,28 @@ export default function GroupChatPage() {
     };
 
     return (
-        <div>
-            <h3>Chat</h3>
-            <ul>
+        <div className="chat-container">
+            <div className="chat-messages">
                 {messages.map((m, i) => (
-                    <li key={i}><b>{m.first_name}:</b> {m.name}</li>
+                    <div
+                        key={i}
+                        className={`message ${m.user_id === user?.id ? "sent" : "received"}`}
+                    >
+                        <div className="message-bubble">
+                            <b>{m.first_name}:</b> {m.name}
+                        </div>
+                    </div>
                 ))}
-            </ul>
-            <input value={input} onChange={e => setInput(e.target.value)} />
-            <button onClick={handleSend}>Send</button>
+            </div>
+
+            <div className="chat-input-container">
+                <input
+                    className="chat-input"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                />
+                <button className="send-btn" onClick={handleSend}>➤</button>
+            </div>
         </div>
     );
 }

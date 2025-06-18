@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import * as api from "../services/authApi.js";
 import { useUser } from "../src/context/UserContext";
+import '../src/index.css';
 
 function LoginPage() {
     const [email, setEmail] = useState("");
@@ -15,20 +16,41 @@ function LoginPage() {
         try {
             const userData = await api.login(email, password);
             setUser(userData);
-            navigate('/users');
+            navigate(`/users/${userData.id}`);
         } catch (error) {
             setLoginResult("Login failed");
         }
     };
 
     return (
-        <div>
-            <h1>Login</h1>
-            <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-            <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-            <button onClick={handleLogin}>Login</button>
-            {loginResult && <p>{loginResult}</p>}
+        <div className="auth-container">
+            <form className="auth-form">
+                <h2>Login</h2>
+                <div className="form-group">
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        className="form-input"
+                    />
+                </div>
+                <div className="form-group">
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        className="form-input"
+                    />
+                </div>
+                <button type="button" onClick={handleLogin} className="auth-btn">
+                    Login
+                </button>
+                {loginResult && <p className="auth-link">{loginResult}</p>}
+            </form>
         </div>
+
     );
 }
 

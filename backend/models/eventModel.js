@@ -1,55 +1,66 @@
-const db = require('../services/database.js').config;
+const { pool } = require('../services/database.js');
 
-const getEventsByGroupId = (groupId) => new Promise((resolve, reject) => {
-    db.query(
+const getEventsByGroupId = async (groupId) => {
+    const [rows] = await pool.query(
         'SELECT * FROM events WHERE group_id = ? ORDER BY start ASC',
-        [groupId],
-        (err, results) => {
-            if (err) reject(err);
-            else resolve(results);
-        }
+        [groupId]
     );
-});
+    return rows;
+};
 
-const addEvent = (groupId, data) => new Promise((resolve, reject) => {
+const getEventsByUserId = async (userId) => {
+    const [rows] = await pool.query(
+        `SELECT e.*, ue.status, ue.joined_at
+         FROM events e
+         JOIN user_events ue ON e.id = ue.event_id
+         WHERE ue.user_id = ?
+         ORDER BY e.start ASC`,
+        [userId]
+    );
+    return rows;
+};
+
+const addEventToGroup = async (groupId, data) => {
     const { name, start, end } = data;
-    db.query(
+    const [result] = await pool.query(
         `INSERT INTO events (group_id, name, start, end)
          VALUES (?, ?, ?, ?)`,
-        [groupId, name, start, end],
-        (err, result) => {
-            if (err) reject(err);
-            else resolve(result.insertId);
-        }
+        [groupId, name, start, end]
     );
-});
+    return result.insertId;
+}
 
-const updateEvent = (eventId, data) => new Promise((resolve, reject) => {
+const addEventToUser = async (userId, eventId, status = 'attending') => {
+    const [result] = await pool.query(
+        `INSERT INTO user_events (user_id, event_id, status)
+         VALUES (?, ?, ?)`,
+        [userId, eventId, status]
+    );
+    return result;
+};
+
+const updateEvent = async (eventId, data) => {
     const { name, start, end } = data;
-    db.query(
+    const [result] = await pool.query(
         `UPDATE events SET name = ?, start = ?, end = ? WHERE id = ?`,
-        [name, start, end, eventId],
-        (err, result) => {
-            if (err) reject(err);
-            else resolve(result);
-        }
+        [name, start, end, eventId]
     );
-});
+    return result;
+};
 
-const deleteEvent = (eventId) => new Promise((resolve, reject) => {
-    db.query(
+const deleteEvent = async (eventId) => {
+    const [result] = await pool.query(
         'DELETE FROM events WHERE id = ?',
-        [eventId],
-        (err, result) => {
-            if (err) reject(err);
-            else resolve(result);
-        }
+        [eventId]
     );
-});
+    return result;
+};
 
 module.exports = {
     getEventsByGroupId,
-    addEvent,
+    getEventsByUserId,
+    addEventToGroup,
+    addEventToUser,
     updateEvent,
     deleteEvent
 };

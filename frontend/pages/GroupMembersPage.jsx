@@ -1,3 +1,4 @@
+// src/pages/GroupMembersPage.jsx
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getGroupMembers, addGroupMember, removeGroupMember } from "../services/membersApi";
@@ -10,7 +11,6 @@ export default function GroupMembersPage() {
     const fetchMembers = async () => {
         const data = await getGroupMembers(groupId);
         setMembers(data || []);
-        console.log("Fetched members:", data);
     };
 
     const handleAdd = async () => {
@@ -28,25 +28,42 @@ export default function GroupMembersPage() {
     useEffect(() => {
         fetchMembers();
     }, [groupId]);
-    console.log("Members list:", members.map(m => m.id))
+
     return (
-        <div>
-            <h3>Group Members</h3>
-            <ul>
-                {members.map(m => (
-                    <li key={m.id}>
-                        {m.first_name} {m.last_name} ({m.role})
-                        <button onClick={() => handleRemove(m.id)}>Remove</button>
-                    </li>
-                ))}
-            </ul>
+        <div className="dashboard-content">
+            <div className="members-header">
+                <h3 className="section-title">Group Members</h3>
+                <button className="invite-btn" onClick={handleAdd}>Add Member</button>
+            </div>
+
             <input
                 type="number"
                 placeholder="User ID"
                 value={newUserId}
                 onChange={e => setNewUserId(e.target.value)}
+                className="form-input"
             />
-            <button onClick={handleAdd}>Add Member</button>
+
+            <table className="members-table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {members.map(m => (
+                    <tr key={m.id}>
+                        <td><span className="member-name">{m.first_name} {m.last_name}</span></td>
+                        <td><span className="member-role">{m.role}</span></td>
+                        <td className="member-actions">
+                            <button onClick={() => handleRemove(m.id)}>Remove</button>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
         </div>
     );
 }

@@ -1,49 +1,40 @@
-const db = require('../services/database.js').config;
+const { pool } = require('../services/database.js');
 
-const getGroups = () => new Promise((resolve, reject) => {
-    db.query('SELECT * FROM `groups`', (err, results) => {
-        if (err) return reject(err);
-        resolve(results);
-    });
-});
+const getGroups = async () => {
+    const [rows] = await pool.query('SELECT * FROM `groups`');
+    return rows;
+};
 
-const getGroupById = (id) => new Promise((resolve, reject) => {
-    db.query('SELECT * FROM `groups` WHERE id = ?', [id], (err, results) => {
-        if (err) return reject(err);
-        resolve(results[0] || null);
-    });
-});
+const getGroupById = async (id) => {
+    const [rows] = await pool.query('SELECT * FROM `groups` WHERE id = ?', [id]);
+    return rows[0] || null;
+};
 
-const addGroup = (groupData) => new Promise((resolve, reject) => {
+const addGroup = async (groupData) => {
     const { name, description } = groupData;
-    db.query(
+    const [result] = await pool.query(
         'INSERT INTO `groups` (name, description) VALUES (?, ?)',
-        [name, description],
-        (err, result) => {
-            if (err) return reject(err);
-            resolve(result.insertId);
-        }
+        [name, description]
     );
-});
+    return result.insertId;
+};
 
-const updateGroup = (id, groupData) => new Promise((resolve, reject) => {
+const updateGroup = async (id, groupData) => {
     const { name, description } = groupData;
-    db.query(
+    const [result] = await pool.query(
         'UPDATE `groups` SET name = ?, description = ? WHERE id = ?',
-        [name, description, id],
-        (err, result) => {
-            if (err) return reject(err);
-            resolve(result);
-        }
+        [name, description, id]
     );
-});
+    return result;
+};
 
-const deleteGroup = (id) => new Promise((resolve, reject) => {
-    db.query('DELETE FROM `groups` WHERE id = ?', [id], (err, result) => {
-        if (err) return reject(err);
-        resolve(result);
-    });
-});
+const deleteGroup = async (id) => {
+    const [result] = await pool.query(
+        'DELETE FROM `groups` WHERE id = ?',
+        [id]
+    );
+    return result;
+};
 
 module.exports = {
     getGroups,

@@ -17,7 +17,7 @@ async function addResource(req, res) {
         const file = req.file;
         console.log(req.file);
         if (!file) {
-            return res.status(400);
+            return res.status(400).json({ message: "No file uploaded." });
         }
 
         const resourceData = {
@@ -29,7 +29,7 @@ async function addResource(req, res) {
         };
 
         const newId = await resourceModel.addResource(groupId, resourceData);
-        res.status(201);
+        res.status(201).json({ id: newId });
     } catch (err) {
         console.error("Error in addResource:", err);
         res.sendStatus(500);

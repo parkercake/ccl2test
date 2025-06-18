@@ -2,14 +2,14 @@ export const login = async (email, password) => {
     const res = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // ✅ allow cookies
+        credentials: "include",
         body: JSON.stringify({ email, password }),
     });
 
     if (!res.ok) throw new Error("Login failed");
     const data = await res.json();
 
-    localStorage.setItem("user", JSON.stringify(data.user)); // optional: or use context
+    localStorage.setItem("user", JSON.stringify(data.user));
     return data.user;
 };
 

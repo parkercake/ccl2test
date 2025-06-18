@@ -5,11 +5,14 @@ const verifyToken = require('../middleware/verifyToken');
 
 router.use(verifyToken);
 
-// group-based
-router.get('/', controller.getEvents);
-router.post('/', controller.addEvent);
+// group-based routes
+router.get('/groups/:groupId', controller.getEvents);
+router.post('/groups/:groupId', controller.addEventToGroup);
 
-// global
+// user-based route (for personal calendar)
+router.post('/users/:userId', controller.addEventToUser);
+
+// general
 router.patch('/:eventId', controller.updateEvent);
 router.delete('/:eventId', controller.deleteEvent);
 

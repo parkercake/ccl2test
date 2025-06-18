@@ -1,108 +1,56 @@
-const db = require('../services/database.js').config;
-
+const { pool } = require('../services/database.js');
 const authService = require('../services/authService');
 
-let getUsers = () => new Promise((resolve, reject) => {
-    db.query("SELECT * FROM users_ccl2", function (err, users, fields) {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(users);
-        }
-    });
-});
+const getUsers = async () => {
+    const [rows] = await pool.query("SELECT * FROM users_ccl2");
+    return rows;
+};
 
-let getUserById = (id) => new Promise((resolve, reject) => {
-    db.query("SELECT * FROM users_ccl2 WHERE id = ?", [id], function (err, user, fields) {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(user);
-        }
-    });
-});
+const getUserById = async (id) => {
+    const [rows] = await pool.query("SELECT * FROM users_ccl2 WHERE id = ?", [id]);
+    return rows[0];
+};
 
-let getUserByEmail = (email) => new Promise((resolve, reject) => {
-    db.query(
-        "SELECT * FROM users_ccl2 WHERE email = ?",
-        [email],
-        function (err, users) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(users.length > 0 ? users[0] : null);
-            }
-        }
+const getUserByEmail = async (email) => {
+    const [rows] = await pool.query("SELECT * FROM users_ccl2 WHERE email = ?", [email]);
+    return rows.length > 0 ? rows[0] : null;
+};
+
+const addUser = async (userData) => {
+    const { first_name, last_name, email, password, bio } = userData;
+    const hashedPassword = await authService.hashPassword(password);
+
+    const [result] = await pool.query(
+        "INSERT INTO users_ccl2 (first_name, last_name, email, password, bio) VALUES (?, ?, ?, ?, ?)",
+        [first_name, last_name, email, hashedPassword, bio]
     );
-});
 
-let addUser = (userData) => new Promise(async (resolve, reject) => {
-    try {
-        const { first_name, last_name, email, password, bio } = userData;
+    return result;
+};
 
+const updateUser = async (id, userData) => {
+    const { first_name, last_name, email, bio, password } = userData;
+
+    if (password && password.length > 0) {
         const hashedPassword = await authService.hashPassword(password);
-
-        db.query(
-            "INSERT INTO users_ccl2 (first_name, last_name, email, password, bio) VALUES (?, ?, ?, ?, ?)",
-            [first_name, last_name, email, hashedPassword, bio],
-            function (err, result) {
-                if (err) reject(err);
-                else resolve(result);
-            }
+        const [result] = await pool.query(
+            "UPDATE users_ccl2 SET first_name = ?, last_name = ?, email = ?, bio = ?, password = ? WHERE id = ?",
+            [first_name, last_name, email, bio, hashedPassword, id]
         );
-    } catch (err) {
-        reject(err);
+        return result;
+    } else {
+        const [result] = await pool.query(
+            "UPDATE users_ccl2 SET first_name = ?, last_name = ?, email = ?, bio = ? WHERE id = ?",
+            [first_name, last_name, email, bio, id]
+        );
+        return result;
     }
-});
+};
 
-
-
-let updateUser = (id, userData) => new Promise(async (resolve, reject) => {
-    try {
-        const { first_name, last_name, email, bio, password } = userData;
-
-        if (password && password.length > 0) {
-            const hashedPassword = await authService.hashPassword(password);
-            db.query(
-                "UPDATE users_ccl2 SET first_name = ?, last_name = ?, email = ?, bio = ?, password = ? WHERE id = ?",
-                [first_name, last_name, email, bio, hashedPassword, id],
-                function (err, result) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(result);
-                    }
-                }
-            );
-        } else {
-            // Update without changing password
-            db.query(
-                "UPDATE users_ccl2 SET first_name = ?, last_name = ?, email = ?, bio = ? WHERE id = ?",
-                [first_name, last_name, email, bio, id],
-                function (err, result) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(result);
-                    }
-                }
-            );
-        }
-    } catch (err) {
-        reject(err);
-    }
-});
-
-
-let deleteUser = (id) => new Promise((resolve, reject) => {
-    db.query("DELETE FROM users_ccl2 WHERE id = ?", [id], function (err, result) {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(result);
-        }
-    });
-});
+const deleteUser = async (id) => {
+    const [result] = await pool.query("DELETE FROM users_ccl2 WHERE id = ?", [id]);
+    return result;
+};
 
 module.exports = {
     getUsers,

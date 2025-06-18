@@ -37,13 +37,7 @@ function UsersPage() {
     const handleAddUser = async () => {
         try {
             await api.addUser(newUser);
-            setNewUser({
-                first_name: "",
-                last_name: "",
-                email: "",
-                password: "",
-                bio: ""
-            });
+            setNewUser({ first_name: "", last_name: "", email: "", password: "", bio: "" });
             await fetchUsers();
         } catch (error) {
             console.error('Error adding user:', error);
@@ -54,13 +48,7 @@ function UsersPage() {
         try {
             await api.updateUser(editingUserId, newUser);
             setEditingUserId(null);
-            setNewUser({
-                first_name: "",
-                last_name: "",
-                email: "",
-                password: "",
-                bio: ""
-            });
+            setNewUser({ first_name: "", last_name: "", email: "", password: "", bio: "" });
             await fetchUsers();
         } catch (error) {
             console.error('Error updating user:', error);
@@ -102,48 +90,62 @@ function UsersPage() {
     }, []);
 
     return (
-        <div>
-            <h1>Users</h1>
-            <button onClick={handleLogout}>Logout</button>
-            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+        <div className="dashboard-content">
+            <div className="header">
+                <h1 className="section-title">Users</h1>
+                <button className="login-btn" onClick={handleLogout}>Logout</button>
+            </div>
 
-            <div>
-                <input
-                    type="text"
-                    placeholder="Enter first name"
-                    value={newUser.first_name}
-                    onChange={(e) => setNewUser({ ...newUser, first_name: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="Enter last name"
-                    value={newUser.last_name}
-                    onChange={(e) => setNewUser({ ...newUser, last_name: e.target.value })}
-                />
+            {errorMessage && <p className="auth-link">{errorMessage}</p>}
+
+            <div className="auth-form">
+                <div className="form-row">
+                    <input
+                        type="text"
+                        className="form-input"
+                        placeholder="First name"
+                        value={newUser.first_name}
+                        onChange={(e) => setNewUser({ ...newUser, first_name: e.target.value })}
+                    />
+                    <input
+                        type="text"
+                        className="form-input"
+                        placeholder="Last name"
+                        value={newUser.last_name}
+                        onChange={(e) => setNewUser({ ...newUser, last_name: e.target.value })}
+                    />
+                </div>
+
                 <input
                     type="email"
-                    placeholder="Enter email"
+                    className="form-input"
+                    placeholder="Email"
                     value={newUser.email}
                     onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                 />
+
                 <input
                     type="text"
-                    placeholder="Enter bio"
+                    className="form-input"
+                    placeholder="Bio"
                     value={newUser.bio}
                     onChange={(e) => setNewUser({ ...newUser, bio: e.target.value })}
                 />
+
                 <input
                     type="password"
-                    placeholder="Enter password"
+                    className="form-input"
+                    placeholder="Password"
                     value={newUser.password}
                     onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                 />
-                <button onClick={editingUserId ? handleUpdateUser : handleAddUser}>
+
+                <button className="auth-btn" onClick={editingUserId ? handleUpdateUser : handleAddUser}>
                     {editingUserId ? "Update User" : "Add User"}
                 </button>
             </div>
 
-            <table>
+            <table className="members-table">
                 <thead>
                 <tr>
                     <th>Name</th>
@@ -154,7 +156,7 @@ function UsersPage() {
                 {users.map(user => (
                     <tr key={user.id}>
                         <td>{user.first_name} {user.last_name}</td>
-                        <td>
+                        <td className="member-actions">
                             <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
                             <button onClick={() => startEditing(user)}>Edit</button>
                         </td>

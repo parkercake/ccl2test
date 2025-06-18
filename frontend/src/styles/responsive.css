@@ -1,0 +1,39 @@
+/* Responsive Design */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .nav-item {
+        margin: 1px 10px;
+        padding: 8px 15px;
+    }
+
+    .hero-section,
+    .features-section {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .hero-title {
+        font-size: 36px;
+    }
+
+    .groups-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .calendar-container {
+        flex-direction: column;
+    }
+
+    .calendar-sidebar {
+        width: 100%;
+    }
+}

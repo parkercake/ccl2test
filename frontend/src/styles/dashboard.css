@@ -1,0 +1,64 @@
+/* Dashboard */
+.dashboard-content {
+    padding: 30px;
+}
+
+.search-bar {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 16px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.activities-section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.activities-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.activities-table th {
+    background-color: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #666;
+    font-size: 14px;
+}
+
+.activities-table td {
+    padding: 12px;
+    border-top: 1px solid #eee;
+}
+
+.activity-group,
+.activity-message {
+    background-color: #6db46d;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.view-all-link {
+    color: #6db46d;
+    text-decoration: none;
+    font-size: 14px;
+    float: right;
+}

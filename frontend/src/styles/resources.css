@@ -1,0 +1,91 @@
+/* Resources Page */
+.resources-list {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    gap: 15px;
+}
+
+.resource-item:last-child {
+    border-bottom: none;
+}
+
+.resource-info {
+    flex: 1;
+}
+
+.resource-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.resource-date {
+    font-size: 12px;
+    color: #666;
+}
+
+.file-type-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    background-color: #f0f0f0;
+}
+
+.file-type-badge.pdf { background-color: #ffebee; color: #c62828; }
+.file-type-badge.ppt { background-color: #fff3e0; color: #ef6c00; }
+.file-type-badge.doc { background-color: #e3f2fd; color: #1565c0; }
+.file-type-badge.excel { background-color: #e8f5e8; color: #2e7d32; }
+
+.resource-author {
+    font-size: 14px;
+    color: #666;
+    min-width: 120px;
+}
+
+.resource-size {
+    font-size: 12px;
+    color: #999;
+    min-width: 60px;
+    text-align: right;
+}
+
+.resource-actions {
+    color: #ccc;
+    font-size: 18px;
+}
+
+.resource-upload-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.resource-upload-row .form-input {
+    flex: 1;
+}
+
+.resource-upload-row input[type="file"], [type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 14px;
+}
+
+.resource-upload-row .auth-btn {
+    margin: 0;
+    height: 44px;
+    white-space: nowrap;
+}

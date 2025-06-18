@@ -5,8 +5,20 @@ export const getEvents = async (groupId) => {
     return res.ok ? res.json() : [];
 };
 
-export const addEvent = async (groupId, event) => {
+export const getEventsFromUser = async (userId) => {
+    const res = await secureFetch(`/users/${userId}/events`);
+    return res.ok ? res.json() : [];
+}
+
+export const addEventToGroup = async (groupId, event) => {
     return secureFetch(`/groups/${groupId}/events`, {
+        method: "POST",
+        body: JSON.stringify(event)
+    });
+};
+
+export const addEventToUser = async (userId, event) => {
+    return secureFetch(`/events/users/${userId}`, {
         method: "POST",
         body: JSON.stringify(event)
     });
