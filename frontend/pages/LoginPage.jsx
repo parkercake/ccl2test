@@ -1,8 +1,7 @@
-// src/pages/LoginPage.jsx
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import * as api from "../services/authApi.js";
 import { useUser } from "../src/context/UserContext";
+import * as api from "../services/authApi.js";
 import '../src/index.css';
 
 function LoginPage() {
@@ -15,7 +14,7 @@ function LoginPage() {
     const handleLogin = async () => {
         try {
             const userData = await api.login(email, password);
-            setUser(userData);
+            setUser(userData); // sets context
             navigate(`/users/${userData.id}`);
         } catch (error) {
             setLoginResult("Login failed");
@@ -50,7 +49,6 @@ function LoginPage() {
                 {loginResult && <p className="auth-link">{loginResult}</p>}
             </form>
         </div>
-
     );
 }
 

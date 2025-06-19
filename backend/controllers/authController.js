@@ -1,53 +1,36 @@
 const userModel = require('../models/userModel');
 const authService = require('../services/authService');
 
-async function login(req, res) {
+const login = async (req, res) => {
+    const { email, password } = req.body;
+
     try {
-        const { email, password } = req.body;
-
-        const user = await userModel.getUserByEmail(email);
-        console.log("Found user:", user); // ✅ Add this line
-
-        if (!user || !user.password) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+        const user = await authService.authenticateUser(email, password);
+        if (!user) {
+            return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        const match = await authService.comparePasswords(password, user.password);
-        console.log("Password match:", match); // ✅ Add this too
+        // Generate the token
+        const token = authService.generateToken(user);
 
-        if (!match) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
-
-        const accessToken = authService.generateAccessToken(user);
-        const refreshToken = authService.generateRefreshToken(user);
-        res.cookie("accessToken", accessToken, {
+        // ✅ Set the token as an HTTP-only cookie
+        res.cookie("accessToken", token, {
             httpOnly: true,
-            secure: false, // set to true in production (HTTPS)
-            sameSite: "Lax",
-            maxAge: 60 * 1000 // 1 minute
-        });
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "Lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
-        res.status(200).json({
-            user: {
-                id: user.id,
-                first_name: user.first_name,
-                last_name: user.last_name,
-                email: user.email
-            }
+            secure: true,         // 🔒 required for SameSite=None
+            sameSite: "None",     // 🔥 allows cross-origin cookie sharing
+            maxAge: 24 * 60 * 60 * 1000,
         });
 
+        res.json(user); // or { user: ... } if you prefer
     } catch (err) {
-        console.error('Error in login:', err);
-        res.sendStatus(500);
+        console.error("Login failed:", err);
+        res.status(500).json({ message: "Server error" });
     }
-}
+};
 
+const getMe = (req, res) => {
+    res.json(req.user); // assuming req.user is set by verifyToken
+};
 
 async function refresh(req, res) {
     const { refreshToken } = req.body;
@@ -72,5 +55,6 @@ function logout(req, res) {
 module.exports = {
     login,
     refresh,
-    logout
+    logout,
+    getMe
 };

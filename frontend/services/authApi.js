@@ -32,3 +32,13 @@ export const logout = async () => {
         credentials: "include"
     });
 };
+
+export const fetchMe = async () => {
+    const response = await fetch(`${BASE_URL}/auth/me`, {
+        credentials: "include",
+    });
+    if (!response.ok) {
+        throw new Error("Not authenticated");
+    }
+    return response.json();
+};

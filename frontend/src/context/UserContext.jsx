@@ -1,38 +1,33 @@
-// src/context/UserContext.jsx
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
+import { fetchMe } from "../../services/authApi";
 
-const UserContext = createContext(null);
+export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-    const [user, setUser] = useState(() => {
-        try {
-            const raw = localStorage.getItem("user");
-            return raw ? JSON.parse(raw) : null;
-        } catch {
-            return null;
-        }
-    });
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true); // Optional: block rendering during check
 
     useEffect(() => {
-        try {
-            if (user) localStorage.setItem("user", JSON.stringify(user));
-            else localStorage.removeItem("user");
-        } catch {
-            console.warn("Unable to access localStorage for user context.");
-        }
-    }, [user]);
+        const restoreUser = async () => {
+            try {
+                const userData = await fetchMe();
+                setUser(userData);
+            } catch (err) {
+                console.error("fetchMe failed:", err);
+                setUser(null); // Not logged in
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        restoreUser();
+    }, []);
 
     return (
         <UserContext.Provider value={{ user, setUser }}>
-            {children}
+            {!loading && children}
         </UserContext.Provider>
     );
 };
 
-export const useUser = () => {
-    const context = useContext(UserContext);
-    if (context === undefined) {
-        throw new Error("useUser must be used within a UserProvider");
-    }
-    return context;
-};
+export const useUser = () => useContext(UserContext);

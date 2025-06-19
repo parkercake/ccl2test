@@ -14,12 +14,11 @@ const port = 3000;
 
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-app.use(cors(
-    {
-    origin: true,               // ✅ your Vite/React frontend
-    credentials: true               // ✅ allow sending cookies
-}
-));
+app.use(cors({
+    origin: "http://localhost:5173", // your frontend
+    credentials: true               // allow cookies
+}));
+
 app.use(cookieParser());
 
 const authRouter = require('./routes/auth');
