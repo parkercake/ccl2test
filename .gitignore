@@ -4,3 +4,4 @@
 /frontend/.env
 /backend/uploads
 .idea
+/node_modules
